@@ -23,7 +23,7 @@ namespace AC
 				// Update is called once per frame
 				void Awake ()
 				{
-						Debug.Log ("Initializing DomePanel");
+//						Debug.Log ("Initializing DomePanel");
 						Game.Instance.GameState.StateChangedEvent += OnGameStateChangedHandler;
 						Game.Instance.Domes.ActiveDomeEvent += HandleActiveDomeEvent;
 				}
@@ -60,7 +60,7 @@ namespace AC
 
 				void OnGameStateChangedHandler (StateChange change)
 				{
-//						Debug.Log ("Changing panel state based on " + change.state);
+						Debug.Log ("DOME PANEL Changing panel state based on " + change.state);
 						Panel.SetActive (change.state == Game.STATE_DOME_PANEL);
 				}
 
@@ -90,7 +90,7 @@ namespace AC
 								foreach (Colonist c in Game.Instance.Domes.ActiveDome.Colonists) {
 										if (i >= Labels.Length)
 												break;
-										Debug.Log (string.Format ("Showing colonist {0}", c.ToString ()));
+//										Debug.Log (string.Format ("Showing colonist {0}", c.ToString ()));
 										Labels [i].Colonist = c;
 										Labels [i].gameObject.SetActive (true);
 										++i;
@@ -106,7 +106,7 @@ namespace AC
 								 Game.Instance.Domes.ActiveDome.Colonists.Count, Game.Instance.Domes.ActiveDome.Capacity);
 
 						}
-						Debug.Log ("capacity is " + s);
+//						Debug.Log ("capacity is " + s);
 						return s;
 				}
 		}

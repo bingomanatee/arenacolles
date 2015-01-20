@@ -11,12 +11,37 @@ namespace AC
 				public static Game Instance = new Game ();
 				public DomeCollection Domes = new DomeCollection ();
 				public ColonistCollection Colonists = new ColonistCollection ();
+				Colonist activeColonist;
+		
+				public event EventHandler<EventArg<Colonist>> ActiveColonistEvent;
+		
+				public Colonist ActiveColonist {
+						get {
+								return activeColonist;
+						}
+						set {
+								Debug.Log ("Active Colonist set");
+								activeColonist = value;
+								
+								GameState.Change (STATE_COLONIST);
+								EventHandler<EventArg<Colonist>> handler = ActiveColonistEvent;
 				
+								if (handler != null) {
+										handler (this, new EventArg<Colonist> (activeColonist));
+								}
+						}
+				}
+
+				public void MoveColonist (Colonist colonist)
+				{
+						ActiveColonist = colonist; 
+				}				
 				
 		#region GameState;
 				public State GameState;
 				public const string STATE_BASE = "base";
 				public const string STATE_DOME_PANEL = "DomePanel";
+				public const string STATE_COLONIST = "colonist";
 #endregion
 
 				public static string Mode {
@@ -31,7 +56,7 @@ namespace AC
 				{
 						if (loc == null)
 								throw new System.Exception ("Attempt to add dome with no location");
-						Debug.Log ("Game addDome");
+//						Debug.Log ("Game addDome");
 						return Domes.AddDome (loc);
 				}
 
@@ -54,10 +79,13 @@ namespace AC
 				
 				public Game ()
 				{
-						GameState = StateList.Init ("gameState", STATE_BASE, STATE_DOME_PANEL);
+						GameState = StateList.Init ("gameState", STATE_BASE, STATE_DOME_PANEL, STATE_COLONIST);
 						GameState.Change (STATE_BASE);
 						
 						TerrainHex.SelectedHexEvent += HandleSelectedHexEvent;
+						GameState.StateChangedEvent += delegate(StateChange change) {
+								Debug.Log ("STATE CHANGED TO " + change.state);
+						};
 				}
 
 				void HandleSelectedHexEvent (object sender, EventArg<TerrainHex> e)

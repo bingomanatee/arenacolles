@@ -19,6 +19,12 @@ namespace AC
 								NameLabel.text = (colonist != null) ? colonist.ColonistName : "(none)";
 						}
 				}
+				
+				public void Move ()
+				{
+						Debug.Log ("Moving Colonist " + Colonist.ColonistName);
+						Game.Instance.MoveColonist (Colonist);
+				}
 		}
 
 }

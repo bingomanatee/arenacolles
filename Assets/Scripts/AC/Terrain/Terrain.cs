@@ -98,7 +98,7 @@ namespace AC
 
 				public void UpdateTerrain ()
 				{
-						Debug.Log (string.Format ("Updating Terrain with {0} domes", Game.Instance.Domes.Count));
+///						Debug.Log (string.Format ("Updating Terrain with {0} domes", Game.Instance.Domes.Count));
 						foreach (TerrainHex hex in Terrain.Instance.Hexes) {
 								hex.Exposed = false;
 						}					

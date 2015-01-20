@@ -81,7 +81,7 @@ namespace AC
 				
 				public void AddDome ()
 				{
-						Debug.Log ("TerrainHex adding dome");
+//						Debug.Log ("TerrainHex adding dome");
 						if (MyDome == null) {
 								MyDome = Game.Instance.AddDome (this);
 						}
