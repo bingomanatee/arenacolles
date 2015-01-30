@@ -32,9 +32,16 @@ namespace AC
 
 		#endregion		
 
+				Dome myDome;
+
 				public Dome MyDome {
-						get;
-						set;
+						get {
+								return myDome;
+						}
+						set {
+								myDome = value;
+								Location = myDome.Location;
+						}
 				}
 				
 		#region names
@@ -58,12 +65,55 @@ namespace AC
 				}
 		
 		#endregion		
+
+		#region location
+				TerrainHex location;
+
+				public TerrainHex Location {
+						get {
+								return location;
+						}
+						set {
+								location = value;
+								ColonistGraphic.transform.position = value.transform.position;
+								if (location != null) {
+										location.SetExplored (true, true);
+								}
+								Terrain.Instance.UpdateFeet ();
+						}
+				}
 		
 				public string ToString ()
 				{
 						return "Colonist " + ColonistName;
 				}
 				
+				public bool IsAdjcentTo (TerrainHex targetHex)
+				{
+						if (targetHex == null)
+								return false;
+						if (Location == null)
+								return false;
+			
+						foreach (TerrainHex hex in Location.Neighbors) {
+								if (hex == targetHex)
+										return true;
+						}
+			
+						return false;
+				}
+		
+#endregion
+
+				GameObject colonistGraphic;
+
+				public GameObject ColonistGraphic {
+						get {
+								if (colonistGraphic == null)
+										colonistGraphic = (GameObject)GameObject.Instantiate ((GameObject)Resources.Load ("Colonist"));
+								return colonistGraphic;
+						}
+				}
 		}
 
 }

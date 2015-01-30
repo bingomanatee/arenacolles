@@ -11,6 +11,7 @@ namespace AC
 				public GameObject TerrainGraphic;
 				public GameObject DomeGraphic;
 				public GameObject ShoeGraphic;
+				public GameObject CoordGraphic;
 				bool hasDome = false;
 				Vector3 index;
 				bool exposed;
@@ -132,6 +133,7 @@ namespace AC
 				{
 						UpdateDomeGraphic ();
 						UpdateShoeGraphic ();
+						CoordGraphic.SetActive (false);
 				}
 	
 				// Update is called once per frame
@@ -166,7 +168,7 @@ namespace AC
 						}
 				}
 			#endregion
-				
+				 
 				public string ToString ()
 				{
 						return string.Format ("<Hex {0}, {1}>", I, J);
@@ -198,14 +200,55 @@ namespace AC
 				
 		#region mouse 
 		
-				void OnMouseUpAsButton ()
+				public void OnMouseUpAsButton ()
 				{
 						//	Debug.Log (string.Format ("MouseUp on {0}", ToString ()));
-						if (Game.Mode == Game.STATE_BASE)
+						switch (Game.Mode) {
+						case Game.STATE_BASE:
 								SelectedHex = this;
+								break;
+								
+						case Game.STATE_COLONIST:
+								if (Game.Instance.ActiveColonist != null)
+										Debug.Log (string.Format ("Moving Colonist {0}", Game.Instance.ActiveColonist));
+								if (Game.Instance.ActiveColonist.IsAdjcentTo (this)) {
+										Game.Instance.ActiveColonist.Location = this;
+										Debug.Log ("... moving to hex");
+								} else {
+										Debug.Log ("Not Moving to non-adjacent hex");
+								}
+				
+								break;
+								
+						default: 
+								Debug.Log (string.Format ("TerrainHex click during state {0} ignored.", Game.Mode));
+								break;
+						}
+				}
+				
+				public void OnMouseEnter ()
+				{
+						ShowCoordinates (true);
+				}
+				
+				public void OnMouseExit ()
+				{
+						ShowCoordinates (false);
 				}
 		
 		#endregion 
+
+				bool explored;
+
+				public bool Explored {
+						get {
+								return explored;
+						}
+						set {
+								explored = value;
+								Terrain.Instance.UpdateTerrain ();
+						}
+				}
 		
 				public static bool operator == (TerrainHex a, TerrainHex b)
 				{
@@ -227,7 +270,25 @@ namespace AC
 						return !(a == b);
 				}
 		
+				public void SetFeet (bool show, bool showDebug = false)
+				{
+						if (showDebug)
+								Debug.Log (string.Format ("Showing foot for {0}, {1} to {2}", I, J, show));
+						ShoeGraphic.SetActive (show);
+				}
+				
+				public void ShowCoordinates (bool show)
+				{
+						CoordGraphic.SetActive (show);
+				}
 		
+				public void SetExplored (bool b, bool b2)
+				{
+						Explored = b;
+			
+						foreach (TerrainHex neighbor in Neighbors)
+								neighbor.Explored = true;
+				}
 		}
 		
 }

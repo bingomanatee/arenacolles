@@ -32,6 +32,18 @@ namespace AC
 						//	Debug.Log ("Created Hexes");
 						GetHex (0, 0).AddDome ();
 						UpdateTerrain ();	
+						Game.Instance.GameState.StateChangedEvent += HandleGameChangeEvent;
+						Game.Instance.ActiveColonistEvent += HandleActiveColonistEvent;
+				}
+
+				void HandleActiveColonistEvent (object sender, EventArg<Colonist> e)
+				{
+						UpdateFeet ();
+				}
+
+				void HandleGameChangeEvent (StateChange change)
+				{
+						UpdateFeet ();
 				}
 				
 				void Start ()
@@ -100,7 +112,7 @@ namespace AC
 				{
 ///						Debug.Log (string.Format ("Updating Terrain with {0} domes", Game.Instance.Domes.Count));
 						foreach (TerrainHex hex in Terrain.Instance.Hexes) {
-								hex.Exposed = false;
+								hex.Exposed = hex.Explored;
 						}					
 					
 						foreach (Dome dome in Game.Instance.Domes) {
@@ -113,6 +125,27 @@ namespace AC
 								} else {
 										Debug.Log ("ignoring unplaced dome");
 								}
+						}
+				}
+
+				public void UpdateFeet ()
+				{
+						foreach (TerrainHex hex in Hexes) {
+								hex.SetFeet (false);
+						}
+						switch (Game.Instance.GameState.state) {
+			
+						case Game.STATE_COLONIST: 
+								Debug.Log ("showing active colonist feet");
+								foreach (TerrainHex hex in Game.Instance.ActiveColonist.Location.Neighbors) {
+										hex.SetFeet (true);
+								}
+								break;
+			
+						default:
+			
+								break;
+			
 						}
 				}
 		}
